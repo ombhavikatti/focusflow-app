@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>FocusFlow AI</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+<h1>⚡ FocusFlow AI</h1>
+
+<form method="POST" class="task-form">
+    <input type="text" name="task" placeholder="Enter task..." required>
+
+    <select name="priority">
+        <option>High</option>
+        <option>Medium</option>
+        <option>Low</option>
+    </select>
+
+    <button>Add</button>
+</form>
+
+<div class="dashboard">
+    <p>Total: {{ total }}</p>
+    <p>Completed: {{ completed }}</p>
+    <p>Progress: {{ (completed/total*100) if total>0 else 0 }}%</p>
+</div>
+
+<ul>
+{% for task in tasks %}
+<li class="{{ 'done' if task.done else '' }}">
+    <div>
+        <b>{{ task.text }}</b><br>
+        <small>{{ task.category }} | {{ task.priority }}</small>
+    </div>
+
+    <div>
+        <a href="/complete/{{ loop.index0 }}">✔</a>
+        <a href="/delete/{{ loop.index0 }}">❌</a>
+    </div>
+</li>
+{% endfor %}
+</ul>
+
+<h2>⏱ Focus Session</h2>
+<div id="timer">25:00</div>
+<button onclick="startTimer()">Start</button>
+<button onclick="resetTimer()">Reset</button>
+
+<button onclick="toggleTheme()">🌙</button>
+
+</div>
+
+<script>
+let time = 1500;
+let sessions = 0;
+let interval;
+
+function startTimer(){
+    interval = setInterval(()=>{
+        if(time>0){
+            time--;
+            let m = Math.floor(time/60);
+            let s = time%60;
+            document.getElementById("timer").innerText =
+                m + ":" + (s<10?"0":"") + s;
+        } else {
+            sessions++;
+            alert("Session Done! Total sessions: " + sessions);
+            resetTimer();
+        }
+    },1000);
+}
+
+function resetTimer(){
+    clearInterval(interval);
+    time = 1500;
+    document.getElementById("timer").innerText = "25:00";
+}
+
+function toggleTheme(){
+    document.body.classList.toggle("dark");
+}
+</script>
+
+</body>
+</html>
