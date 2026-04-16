@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>FocusFlow AI</title>
-<link rel="stylesheet" href="/static/style.css">
+    <title>FocusFlow AI</title>
+
+    <!-- FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
 
-<div class="app">
+<div class="container">
 
 <h1>⚡ FocusFlow AI</h1>
 
-<form method="POST" class="task-form">
-    <input type="text" name="task" placeholder="Enter task..." required>
+<form method="POST" class="form">
+    <input type="text" name="title" placeholder="Enter your task..." required>
 
     <select name="priority">
         <option>High</option>
@@ -23,66 +27,65 @@
     <button>Add</button>
 </form>
 
-<div class="dashboard">
-    <p>Total: {{ total }}</p>
-    <p>Completed: {{ completed }}</p>
-    <p>Progress: {{ (completed/total*100) if total>0 else 0 }}%</p>
+<div class="stats">
+    <span>Total: {{ total }}</span>
+    <span>Completed: {{ completed }}</span>
+    <span>Progress: {{ progress }}%</span>
 </div>
 
 <ul>
 {% for task in tasks %}
-<li class="{{ 'done' if task.done else '' }}">
+<li class="{{ 'done' if task.status == 'Done' else '' }}">
+    
     <div>
-        <b>{{ task.text }}</b><br>
-        <small>{{ task.category }} | {{ task.priority }}</small>
+        <strong>{{ task.title }}</strong><br>
+        <small>{{ task.priority }} • {{ task.created_at }}</small>
     </div>
 
     <div>
         <a href="/complete/{{ loop.index0 }}">✔</a>
         <a href="/delete/{{ loop.index0 }}">❌</a>
     </div>
+
 </li>
 {% endfor %}
 </ul>
 
-<h2>⏱ Focus Session</h2>
-<div id="timer">25:00</div>
-<button onclick="startTimer()">Start</button>
-<button onclick="resetTimer()">Reset</button>
+<h2>⏱ Focus Timer</h2>
 
-<button onclick="toggleTheme()">🌙</button>
+<div id="timer">25:00</div>
+
+<div class="timer-buttons">
+    <button onclick="startTimer()">Start</button>
+    <button onclick="resetTimer()">Reset</button>
+</div>
 
 </div>
 
 <script>
 let time = 1500;
-let sessions = 0;
-let interval;
+let interval = null;
 
-function startTimer(){
-    interval = setInterval(()=>{
-        if(time>0){
+function startTimer() {
+    if (interval) return;
+
+    interval = setInterval(() => {
+        if (time > 0) {
             time--;
-            let m = Math.floor(time/60);
-            let s = time%60;
+            let m = Math.floor(time / 60);
+            let s = time % 60;
+
             document.getElementById("timer").innerText =
-                m + ":" + (s<10?"0":"") + s;
-        } else {
-            sessions++;
-            alert("Session Done! Total sessions: " + sessions);
-            resetTimer();
+                m + ":" + (s < 10 ? "0" : "") + s;
         }
-    },1000);
+    }, 1000);
 }
 
-function resetTimer(){
+function resetTimer() {
     clearInterval(interval);
+    interval = null;
     time = 1500;
     document.getElementById("timer").innerText = "25:00";
-}
-
-function toggleTheme(){
-    document.body.classList.toggle("dark");
 }
 </script>
 
