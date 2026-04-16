@@ -37,7 +37,7 @@ def index():
         return redirect("/")
 
     total = len(tasks)
-    completed = len([t for t in tasks if t["status"] == "Done"])
+    completed = len([t for t in tasks if t.get("status") == "Done"])
     progress = int((completed / total) * 100) if total > 0 else 0
 
     return render_template("index.html",
