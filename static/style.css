@@ -1,0 +1,93 @@
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+/* Glass Container */
+.container {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 25px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    color: white;
+}
+
+h1 {
+    text-align: center;
+}
+
+/* Form */
+.form {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+input, select {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+}
+
+/* Buttons */
+button {
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: #ff7a18;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.05);
+    background: #ff5722;
+}
+
+/* Stats */
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+/* Tasks */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: rgba(255,255,255,0.9);
+    color: black;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.done {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+/* Timer */
+#timer {
+    font-size: 32px;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.timer-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
