@@ -1,67 +1,64 @@
 from flask import Flask, render_template, request, redirect
 import json
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 
 DATA_FILE = "data.json"
 
-# Load data
-if os.path.exists(DATA_FILE):
-    with open(DATA_FILE, "r") as f:
-        tasks = json.load(f)
-else:
-    tasks = []
+def load_tasks():
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, "r") as f:
+            return json.load(f)
+    return []
 
-def save_data():
+def save_tasks(tasks):
     with open(DATA_FILE, "w") as f:
-        json.dump(tasks, f)
+        json.dump(tasks, f, indent=4)
 
-def categorize(task):
-    task = task.lower()
-    if "study" in task or "exam" in task:
-        return "Study"
-    elif "project" in task or "work" in task:
-        return "Work"
-    else:
-        return "Personal"
-
-@app.route('/', methods=['GET', 'POST'])
+@app.route("/", methods=["GET", "POST"])
 def index():
-    if request.method == 'POST':
-        text = request.form.get('task')
-        priority = request.form.get('priority')
+    tasks = load_tasks()
 
-        if text:
+    if request.method == "POST":
+        title = request.form.get("title")
+        priority = request.form.get("priority")
+
+        if title:
             tasks.append({
-                "text": text,
+                "title": title,
                 "priority": priority,
-                "category": categorize(text),
-                "done": False
+                "status": "Pending",
+                "created_at": datetime.now().strftime("%d %b %Y, %I:%M %p")
             })
-            save_data()
+            save_tasks(tasks)
 
-        return redirect('/')
+        return redirect("/")
 
-    completed = sum(1 for t in tasks if t['done'])
     total = len(tasks)
+    completed = len([t for t in tasks if t["status"] == "Done"])
+    progress = int((completed / total) * 100) if total > 0 else 0
 
     return render_template("index.html",
                            tasks=tasks,
+                           total=total,
                            completed=completed,
-                           total=total)
+                           progress=progress)
 
-@app.route('/complete/<int:index>')
+@app.route("/complete/<int:index>")
 def complete(index):
-    tasks[index]['done'] = True
-    save_data()
-    return redirect('/')
+    tasks = load_tasks()
+    tasks[index]["status"] = "Done"
+    save_tasks(tasks)
+    return redirect("/")
 
-@app.route('/delete/<int:index>')
+@app.route("/delete/<int:index>")
 def delete(index):
+    tasks = load_tasks()
     tasks.pop(index)
-    save_data()
-    return redirect('/')
+    save_tasks(tasks)
+    return redirect("/")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
